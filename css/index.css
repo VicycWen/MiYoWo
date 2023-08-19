@@ -35,3 +35,6 @@ body::before {
 .hide {
   display: none;
 }
+.nav-item {
+  cursor: pointer;
+}

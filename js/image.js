@@ -1,40 +1,25 @@
-const nodeName = "waterfall";
-const gap = 10; //px
+import * as Utils from "./utils.js";
 
-const imgUrl = "https://acg.toubiec.cn/random.php";
-const imgBatchSize = 20; // 一次多少张
-const imgParallelHttpRequest = 2; //每次并行发送两个http请求
-const intervalCheckImgLoad = 100; //ms
-const scrollBottomThreshold = 300; // scroll更新阈值
-const debouneDelay = 300;
-const throttleDelay = 300;
+const rootId = "waterfall";
+// const imgUrl = "https://img.xjh.me/random_img.php?type=acg";
+const imgUrl = "https://img.xjh.me/random_img.php?type=acg&return=302";
 
 // 执行主函数
-imgLazyLoadAndWaterfall(
-  nodeName,
-  gap,
-  imgUrl,
-  imgBatchSize,
-  imgParallelHttpRequest,
-  intervalCheckImgLoad,
-  scrollBottomThreshold,
-  debouneDelay,
-  throttleDelay
-);
+imgLazyLoadAndWaterfall(rootId, imgUrl);
 
 //主函数定义
-function imgLazyLoadAndWaterfall(
-  className,
-  gap,
-  imgUrl,
-  imgBatchSize,
-  imgParallelHttpRequest,
-  intervalCheckImgLoad,
-  scrollBottomThreshold,
-  debouneDelay,
-  throttleDelay
-) {
-  const wf = document.getElementsByClassName(className)[0];
+function imgLazyLoadAndWaterfall(rootId, imgUrl, options = {}) {
+  const {
+    gap = 10, // 图片间距，单位px
+    imgBatchSize = 15, // 一次多少张
+    imgParallelHttpRequest = 2, // 每次并行发送两个http请求
+    intervalCheckImgLoad = 100, //ms
+    scrollBottomThreshold = 300, // scroll更新阈值
+    debounceWait = 300,
+    throttleWait = 300,
+  } = options;
+
+  const wf = document.getElementById(rootId);
   const width = wf.offsetWidth;
   const cols = getCols(width);
   // console.log(wf, width);
@@ -61,15 +46,15 @@ function imgLazyLoadAndWaterfall(
   }
 
   function bindEvent() {
-    window.onscroll = tools.throttle(() => {
+    window.onscroll = Utils.throttle(() => {
       //触发滚动事件的时候间隔时间内只触发一次
       //   console.log("imgCount:", imgCount);
       //   const currImgCount = imgCount;
       if (isScrollBottom(scrollBottomThreshold) && isBatchLoaded) {
         // renderImgList(20);
-        tools.deboune(renderImgList, debouneDelay)(imgBatchSize); //防止发起多次请求
+        Utils.debounce(renderImgList, debounceWait)(imgBatchSize); //防止发起多次请求
       }
-    }, throttleDelay);
+    }, throttleWait);
   }
 
   function getCols(width) {
@@ -97,7 +82,7 @@ function imgLazyLoadAndWaterfall(
     // image.src = `./images/${(imgIdx % 20) + 1}.jpg`;
 
     // 动漫图，速度快
-    image.src = imgUrl + `?x=${imgIdx}`;
+    image.src = Utils.addUrlParam(imgUrl, { num: imgIdx });
 
     image.onload = function () {
       //图片原宽
@@ -129,10 +114,8 @@ function imgLazyLoadAndWaterfall(
     // let currNum = 0;
 
     const t = setInterval(() => {
-      console
-        .log
-        // `图片加载成功数：${loadSuccessNumber},预计图片数：${imgCount},批渲染前图片数：${currImgCount},所需图片数：${num},定时器:${t}`
-        ();
+      // `图片加载成功数：${loadSuccessNumber},预计图片数：${imgCount},批渲染前图片数：${currImgCount},所需图片数：${num},定时器:${t}`
+
       if (loadSuccessNumber === imgCount) {
         for (let i = 1; i < imgParallelHttpRequest + 1; i++) {
           wf.appendChild(createImage(imgUrl, loadSuccessNumber + i));

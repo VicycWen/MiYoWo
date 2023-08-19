@@ -7,7 +7,7 @@
     <title>米游网</title>
 
     <link rel="stylesheet" href="./css/bootstrap.css" />
-    <link rel="stylesheet" type="text/css" href="style.css" />
+    <link rel="stylesheet" type="text/css" href="./css/index.css" />
   </head>
   <body>
     <nav class="navbar navbar-expand-md bg-dark navbar-dark fixed-top">
@@ -38,12 +38,13 @@
 
     <div class="p-1">
       <div class="container">
-        <div class="waterfall"></div>
+        <div id="waterfall" style="position: relative;"></div>
       </div>
     </div>
 
     <script type="text/javascript" src="./js/bootstrap.js"></script>
-    <script type="text/javascript" src="./js/utils.js"></script>
-    <script type="text/javascript" src="./js/image.js"></script>
+    <script type="module" src="./js/image.js"></script>
+    <!-- 测试时启用 -->
+    <!-- <script type="module" src="./test/index.js"></script> -->
   </body>
 </html>
