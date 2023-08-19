@@ -20,10 +20,9 @@ function imgLazyLoadAndWaterfall(rootId, imgUrl, options = {}) {
   } = options;
 
   const wf = document.getElementById(rootId);
-  const width = wf.offsetWidth;
-  const cols = getCols(width);
+  const width = wf.clientWidth;
+  let cols = getCols(width);
   // console.log(wf, width);
-  const imgWidth = (width - (cols - 1) * gap) / cols;
   const heightArr = new Array(cols).fill(0);
 
   let imgCount = 0;
@@ -31,6 +30,7 @@ function imgLazyLoadAndWaterfall(rootId, imgUrl, options = {}) {
   let isBatchLoaded = true;
 
   init();
+  window.addEventListener("resize", Utils.debounce(resizePage, 2 * debounceWait))
 
   function init() {
     renderImgList(imgBatchSize); //不要先渲染，先让滚动条回到顶部
@@ -69,6 +69,7 @@ function imgLazyLoadAndWaterfall(rootId, imgUrl, options = {}) {
   }
 
   function createImage(imgUrl, imgIdx) {
+    const imgWidth = calcImgWidth();
     const oDiv = document.createElement("div");
     const image = new Image();
     // const imgIdx = Math.round(Math.random() * 19 + 1);
@@ -76,6 +77,7 @@ function imgLazyLoadAndWaterfall(rootId, imgUrl, options = {}) {
     oDiv.classList.add("wf-item");
     // oDiv.className = 'wf-item'
     oDiv.classList.add("hide");
+    
 
     oDiv.style.width = imgWidth + "px";
 
@@ -95,7 +97,7 @@ function imgLazyLoadAndWaterfall(rootId, imgUrl, options = {}) {
       const minIdx = getMinIdx(heightArr);
       oDiv.style.top = heightArr[minIdx] + "px";
       oDiv.style.left = minIdx * (imgWidth + gap) + "px";
-      oDiv.style.height = height;
+      oDiv.style.height = height + "px";
       heightArr[minIdx] += height + gap;
       oDiv.classList.remove("hide");
 
@@ -145,5 +147,54 @@ function imgLazyLoadAndWaterfall(rootId, imgUrl, options = {}) {
       return true;
     }
     return false;
+  }
+
+  function resizePage() {
+    const wf = document.getElementById(rootId);
+    const wfItems = wf.childNodes;
+    const width = wf.clientWidth;
+    let newCols = getCols(width);
+    if(cols !== newCols){
+      cols = newCols;
+    }else{
+      return;
+    }
+
+    const imgWidth = calcImgWidth();
+    const heightArr = new Array(cols).fill(0);
+
+    const len = wfItems.length;
+    for(let i=0;i<len;i++){
+      const item = wfItems[i];
+      item.style.opacity = "0";
+    }
+    for(let i=0;i<len;i++){
+      const item = wfItems[i];
+      item.style.opacity = "1";
+      const imgNode = item.childNodes[0];
+  
+      //图片原宽
+      let w = imgNode.width;
+      //图片原高
+      let h = imgNode.height;
+      //image-dom的真实高度(依据当前宽度及图片真实宽高)
+      let height = Math.floor((h * imgWidth) / w);
+  
+      const minIdx = getMinIdx(heightArr);
+      item.style.width = imgWidth + "px";
+      item.style.top = heightArr[minIdx] + "px";
+      item.style.left = minIdx * (imgWidth + gap) + "px";
+      item.style.height = height + "px";
+      heightArr[minIdx] += height + gap;
+    }
+
+  }
+
+  function calcImgWidth() {
+    const wf = document.getElementById(rootId);
+    const width = wf.clientWidth;
+    const cols = getCols(width);
+    const imgWidth = (width - (cols - 1) * gap) / cols;
+    return imgWidth
   }
 }
