@@ -153,12 +153,7 @@ function imgLazyLoadAndWaterfall(rootId, imgUrl, options = {}) {
     const wf = document.getElementById(rootId);
     const wfItems = wf.childNodes;
     const width = wf.clientWidth;
-    let newCols = getCols(width);
-    if(cols !== newCols){
-      cols = newCols;
-    }else{
-      return;
-    }
+    let cols = getCols(width);
 
     const imgWidth = calcImgWidth();
     const heightArr = new Array(cols).fill(0);
