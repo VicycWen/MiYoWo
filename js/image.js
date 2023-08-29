@@ -11,7 +11,7 @@ imgLazyLoadAndWaterfall(rootId, imgUrl);
 function imgLazyLoadAndWaterfall(rootId, imgUrl, options = {}) {
   const {
     gap = 10, // 图片间距，单位px
-    imgBatchSize = 15, // 一次多少张
+    imgBatchSize = 10, // 一次多少张
     imgParallelHttpRequest = 2, // 每次并行发送两个http请求
     intervalCheckImgLoad = 100, //ms
     scrollBottomThreshold = 300, // scroll更新阈值
@@ -23,7 +23,7 @@ function imgLazyLoadAndWaterfall(rootId, imgUrl, options = {}) {
   const width = wf.clientWidth;
   let cols = getCols(width);
   // console.log(wf, width);
-  const heightArr = new Array(cols).fill(0);
+  let heightArr = new Array(cols).fill(0);
 
   let imgCount = 0;
   let loadSuccessNumber = 0;
@@ -156,16 +156,16 @@ function imgLazyLoadAndWaterfall(rootId, imgUrl, options = {}) {
     let cols = getCols(width);
 
     const imgWidth = calcImgWidth();
-    const heightArr = new Array(cols).fill(0);
+    heightArr = new Array(cols).fill(0);
 
     const len = wfItems.length;
     for(let i=0;i<len;i++){
       const item = wfItems[i];
-      item.style.opacity = "0";
+      // item.style.opacity = "0";
     }
     for(let i=0;i<len;i++){
       const item = wfItems[i];
-      item.style.opacity = "1";
+      // item.style.opacity = "1";
       const imgNode = item.childNodes[0];
   
       //图片原宽

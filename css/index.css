@@ -10,6 +10,9 @@ body::before {
 .logo {
   font-family: "KaiTi_GB2312", "DFKai-SB", "STKaiti", "KaiTi";
 }
+.navbar-brand {
+  user-select: none;
+}
 
 /* 瀑布流布局 */
 .waterfall {
