@@ -76,7 +76,7 @@ function imgLazyLoadAndWaterfall(rootId, imgUrl, options = {}) {
 
     oDiv.classList.add("wf-item");
     // oDiv.className = 'wf-item'
-    oDiv.classList.add("hide");
+    // oDiv.classList.add("hide");
     
 
     oDiv.style.width = imgWidth + "px";
@@ -99,14 +99,14 @@ function imgLazyLoadAndWaterfall(rootId, imgUrl, options = {}) {
       oDiv.style.left = minIdx * (imgWidth + gap) + "px";
       oDiv.style.height = height + "px";
       heightArr[minIdx] += height + gap;
-      oDiv.classList.remove("hide");
+      // oDiv.classList.remove("hide");
 
       // let height = Math.round(h / w)*4
 
       loadSuccessNumber++;
       // console.log('载入数&载入成功数',imgCount,loadSuccessNumber)
+      oDiv.appendChild(image);
     };
-    oDiv.appendChild(image);
     return oDiv;
   }
 

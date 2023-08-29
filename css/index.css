@@ -26,6 +26,7 @@ body::before {
 }
 .wf-item {
   position: absolute;
+  transition: all 0.5s ease-in-out;
   /* border: 1px solid red; */
 }
 .wf-item img {
@@ -37,4 +38,5 @@ body::before {
 }
 .nav-item {
   cursor: pointer;
+  user-select: none;
 }
